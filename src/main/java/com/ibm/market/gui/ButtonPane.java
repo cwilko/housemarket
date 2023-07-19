@@ -44,7 +44,7 @@ public class ButtonPane extends JPanel implements ActionListener{
     b2.setToolTipText("Change the criteria to query on");
     b2.addActionListener(this);
 
-    b3 = new JButton("Update");
+    b3 = new JButton("Reset");
     b3.setMnemonic(KeyEvent.VK_U);
     b3.setActionCommand("update");
     b3.setToolTipText("Retrieve latest data from internet and update database");

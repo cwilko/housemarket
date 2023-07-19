@@ -204,7 +204,7 @@ public class PropertyDetails implements Comparable, PropertySelection
    * @see java.lang.Object#toString()
    */
   public String toString() {
-    String displayString = getLocation()+" :  £"+getPrice();
+    String displayString = getLocation()+" :  Â£"+getPrice();
     if (isNew) displayString+=" ** NEW **";
     return displayString;
   }

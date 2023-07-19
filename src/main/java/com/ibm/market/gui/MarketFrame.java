@@ -114,7 +114,7 @@ public class MarketFrame extends JFrame implements RootFrame
    * 
    */
   public void runUpdate() {
-    app.init(filterPane.getCity(),props, listPane);    
+    app.init(filterPane.getCity(),props);    
   }
   /**
    * 

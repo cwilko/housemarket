@@ -149,6 +149,8 @@ public class PropertyIndex extends JList implements MarketList, ActionListener
   /**
    * @param db
    */
+
+  /** REMOVED
   public void persist(final DatabaseManager db)
   {
     int insertAttempts = 0;
@@ -177,6 +179,7 @@ public class PropertyIndex extends JList implements MarketList, ActionListener
       }
     }
   }
+  **/
 
   public void updateGUI() {
     setListData(index.toArray());

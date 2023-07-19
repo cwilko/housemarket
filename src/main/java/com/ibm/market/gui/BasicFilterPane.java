@@ -44,7 +44,7 @@ public class BasicFilterPane extends JPanel implements ItemListener{
     city = new JComboBox();
     city.setBackground(Color.WHITE);
     city.setEditable(true);
-    city.addItem("Winchester");
+    city.addItem("NewForest");
     city.addItem("Southampton");
     
     JPanel cityPane = new JPanel();

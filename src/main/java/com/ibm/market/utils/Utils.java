@@ -199,7 +199,7 @@ public class Utils
    * @param string
    */
   public static void report(String output) {
-    System.out.println(output);
+    //System.out.println(output);
     
     if (reportFile == null)
       reportFile = new ReportFile();

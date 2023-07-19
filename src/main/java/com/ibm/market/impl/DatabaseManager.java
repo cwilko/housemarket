@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import COM.ibm.db2.jdbc.DB2Exception;
+// import COM.ibm.db2.jdbc.DB2Exception;
 
 /**
  * @author cwilkin
@@ -46,9 +46,12 @@ public class DatabaseManager
        //  JDK 1.1.1 on OS/2, where the Class.forName() method does not 
        //  run the static initializer. For other JDKs, the newInstance 
        //  call can be omitted. 
-       Class.forName(dbDriver).newInstance();
+
+       Class.forName(dbDriver);//.newInstance();
        
        con = DriverManager.getConnection(url, user, password);
+    } catch (ClassNotFoundException e) {
+      System.out.println("Could not find: " + dbDriver);
     } catch (Exception e) {
        e.printStackTrace();
     }
@@ -65,14 +68,24 @@ public class DatabaseManager
       Statement stmt = con.createStatement();
       try
       {
-        stmt.executeUpdate("CREATE TABLE " + tableName +                            "(ID VARCHAR(10) NOT NULL, " +
-                           "DATE DATE NOT NULL, " +                           "LOCATION VARCHAR(128) NOT NULL, " +                           "REGION VARCHAR(64), " +                           "TYPE VARCHAR(32) NOT NULL, " +                           "PRICE VARCHAR(16) NOT NULL, " +                           "BEDROOMS VARCHAR(32) NOT NULL, " +                           "AGENT VARCHAR(64) NOT NULL, " +                           "DESCRIPTION VARCHAR(512) NOT NULL, " +
+        stmt.executeUpdate("CREATE TABLE " + tableName + 
+                           "(ID VARCHAR(10) NOT NULL, " +
+                           "DATE DATE NOT NULL, " +
+                           "LOCATION VARCHAR(128) NOT NULL, " +
+                           "REGION VARCHAR(64), " +
+                           "TYPE VARCHAR(32) NOT NULL, " +
+                           "PRICE VARCHAR(16) NOT NULL, " +
+                           "BEDROOMS VARCHAR(32) NOT NULL, " +
+                           "AGENT VARCHAR(64) NOT NULL, " +
+                           "DESCRIPTION VARCHAR(512) NOT NULL, " +
                            "SOLD CHAR(4), " +
-                           "DATESOLD DATE NOT NULL, " +                           "PRIMARY KEY(ID))"); 
+                           "DATESOLD DATE NOT NULL, " +
+                           "PRIMARY KEY(ID))"); 
                          
         System.out.println("Created table "+tableName);
       }
-      catch (DB2Exception e)
+      //catch (DB2Exception e)
+      catch (Exception e)
       {
         System.out.println("Table "+tableName+ " already exists");
       }        
@@ -94,7 +107,9 @@ public class DatabaseManager
     {
                 
       PreparedStatement stmt = 
-        con.prepareStatement("INSERT INTO " + tableName +                             "(ID,DATE,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,DATESOLD) " +                             "VALUES (?,?,?,?,?,?,?,?,?,?,?)"); 
+        con.prepareStatement("INSERT INTO " + tableName +
+                             "(ID,DATE,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,DATESOLD) " +
+                             "VALUES (?,?,?,?,?,?,?,?,?,?,?)"); 
                              
       String sold = "FREE";
       if (details.isSold()) sold = "SOLD";                       
@@ -119,7 +134,7 @@ public class DatabaseManager
         details.updateInGUI();
         added++;
       }
-      catch(DB2Exception e)
+      catch(Exception e)
       {
         // Entry already exists
         e.printStackTrace();
@@ -148,10 +163,11 @@ public class DatabaseManager
         con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                                       ResultSet.CONCUR_READ_ONLY);
      
+      String stmtText = "";
       try
       {
-        String stmtText = "SELECT ID,DATE,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,DATESOLD FROM " + tableName;
-        if (query != null) stmtText+= " WHERE "+query;
+        stmtText = "SELECT ID,DATE,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,DATESOLD FROM " + tableName;
+        if (query != null && !query.trim().isEmpty()) stmtText+= " WHERE "+query;
         ResultSet results = stmt.executeQuery(stmtText);
         results.last();
         properties = new PropertyDetails[results.getRow()];
@@ -176,9 +192,11 @@ public class DatabaseManager
           properties[i++] = details;
         }
       }
-      catch(DB2Exception e)
+      //catch(DB2Exception e)
+      catch(Exception e)
       {
-        // Entry already exists
+        System.out.println("Error running SQL query: " + stmtText);
+        e.printStackTrace();
       }  
     }   
     catch(Exception e)
@@ -208,7 +226,8 @@ public class DatabaseManager
         stmt.executeUpdate();
         System.out.println("Updated entry, ID : "+details.getId()+" is no longer available");
       }
-      catch(DB2Exception e)
+      //catch(DB2Exception e)
+      catch (Exception e)
       {
         System.out.println("Could not update entry to SOLD");
         e.printStackTrace();
