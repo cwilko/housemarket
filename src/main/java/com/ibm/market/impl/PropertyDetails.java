@@ -227,7 +227,7 @@ public class PropertyDetails implements Comparable, PropertySelection
    * @param string
    */
   public void setDate(String date) {
-    this.date = date;    
+    this.date = date.substring(0, date.indexOf(' '));    
   }
   
   public String getDate()
@@ -270,8 +270,9 @@ public class PropertyDetails implements Comparable, PropertySelection
   }
 
   public void setDateSold(String dateSold) {
-    this.dateSold = dateSold.replaceAll("-","/");
-    
+
+    dateSold = dateSold.substring(0, dateSold.indexOf(' '));
+    this.dateSold = dateSold.replaceAll("-","/");    
     StringTokenizer strTok = new StringTokenizer(dateSold,"-",false);
     
     int year = Integer.parseInt(strTok.nextToken());
