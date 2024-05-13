@@ -56,95 +56,6 @@ public class DatabaseManager
        e.printStackTrace();
     }
   }
-  
-  /**
-   * 
-   */
-  public void initialise(String tableName)
-  {
-    try
-    {    
-      System.out.println("Connected to database...");
-      Statement stmt = con.createStatement();
-      try
-      {
-        stmt.executeUpdate("CREATE TABLE " + tableName + 
-                           "(ID VARCHAR(10) NOT NULL, " +
-                           "DATE DATE NOT NULL, " +
-                           "LOCATION VARCHAR(128) NOT NULL, " +
-                           "REGION VARCHAR(64), " +
-                           "TYPE VARCHAR(32) NOT NULL, " +
-                           "PRICE VARCHAR(16) NOT NULL, " +
-                           "BEDROOMS VARCHAR(32) NOT NULL, " +
-                           "AGENT VARCHAR(64) NOT NULL, " +
-                           "DESCRIPTION VARCHAR(512) NOT NULL, " +
-                           "SOLD CHAR(4), " +
-                           "DATESOLD DATE NOT NULL, " +
-                           "PRIMARY KEY(ID))"); 
-                         
-        System.out.println("Created table "+tableName);
-      }
-      //catch (DB2Exception e)
-      catch (Exception e)
-      {
-        System.out.println("Table "+tableName+ " already exists");
-      }        
-                            
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-    }
-  
-  }
-
-  /**
-   * @param details
-   */
-  public void addEntry(String tableName, PropertyDetails details)
-  {
-    try
-    {
-                
-      PreparedStatement stmt = 
-        con.prepareStatement("INSERT INTO " + tableName +
-                             "(ID,DATE,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,DATESOLD) " +
-                             "VALUES (?,?,?,?,?,?,?,?,?,?,?)"); 
-                             
-      String sold = "FREE";
-      if (details.isSold()) sold = "SOLD";                       
-                      
-      stmt.setString(1, details.getId());
-      stmt.setDate(2, new Date(System.currentTimeMillis()));   
-      stmt.setString(3, details.getLocation());
-      stmt.setString(4, details.getRegion());
-      stmt.setString(5, details.getType());
-      stmt.setString(6, details.getPrice());
-      stmt.setString(7, details.getBedrooms());
-      stmt.setString(8, details.getAgentDetails());
-      stmt.setString(9, details.getDescription());
-      stmt.setString(10, sold);
-      stmt.setDate(11, new Date(System.currentTimeMillis())); 
-      
-      try
-      {
-        stmt.executeUpdate();
-        System.out.println("Added new entry, ID : "+details.getId()+" into table "+tableName);
-        details.setNewProperty();
-        details.updateInGUI();
-        added++;
-      }
-      catch(Exception e)
-      {
-        // Entry already exists
-        e.printStackTrace();
-      }   
-    }   
-    catch(Exception e)
-    {
-      e.printStackTrace();
-    }
-  }
 
   /**
    * @return
@@ -166,7 +77,7 @@ public class DatabaseManager
       String stmtText = "";
       try
       {
-        stmtText = "SELECT ID,DATE,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,DATESOLD FROM " + tableName;
+        stmtText = "SELECT ID,CREATED_ON,LOCATION,REGION,TYPE,PRICE,BEDROOMS,AGENT,DESCRIPTION,SOLD,SOLD_ON FROM " + tableName;
         if (query != null && !query.trim().isEmpty()) stmtText+= " WHERE "+query;
         ResultSet results = stmt.executeQuery(stmtText);
         results.last();
@@ -177,7 +88,7 @@ public class DatabaseManager
         {
           PropertyDetails details = new PropertyDetails();
           details.setId(results.getString("ID"));
-          details.setDate(results.getString("DATE"));
+          details.setDate(results.getString("CREATED_ON"));
           details.setLocation(results.getString("LOCATION"));
           details.setRegion(results.getString("REGION"));
           details.setType(results.getString("TYPE"));
@@ -186,7 +97,7 @@ public class DatabaseManager
           details.setAgentDetails(results.getString("AGENT"));
           details.setDescription(results.getString("DESCRIPTION"));
           details.setIsSold(new Boolean((results.getString("SOLD").equals("SOLD")?true:false)));
-          details.setDateSold(results.getString("DATESOLD"));
+          details.setDateSold(results.getString("SOLD_ON"));
           if (details.getDate().equals(new Date(System.currentTimeMillis()).toString()))
             details.setNewProperty();
           properties[i++] = details;
@@ -216,7 +127,7 @@ public class DatabaseManager
     {   
       PreparedStatement stmt = 
         con.prepareStatement("UPDATE " + tableName +
-                             " SET SOLD='SOLD',DATESOLD=? "+
+                             " SET SOLD='SOLD',SOLD_ON=? "+
                              "WHERE ID=?"); 
 
       stmt.setDate(1, new Date(System.currentTimeMillis())); 

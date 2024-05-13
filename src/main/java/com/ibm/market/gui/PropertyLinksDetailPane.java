@@ -62,7 +62,7 @@ public class PropertyLinksDetailPane extends DetailPane{
      add(new JLabel(details.getPrice()));
     
      add(new JLabel("Potential Profit : "));
-     add(new JLabel("£"+prop.getBargainValue()));
+     add(new JLabel("£"+prop.getProfit()));
     
      add(new JLabel("Average Price : "));
      add(new JLabel("£"+prop.getAveragePrice()));

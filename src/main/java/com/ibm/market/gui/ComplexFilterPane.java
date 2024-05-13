@@ -99,7 +99,7 @@ public class ComplexFilterPane extends JFrame implements ActionListener {
     {
       String sql = "";
       if (!location.getText().equals(""))  sql+="LOCATION LIKE '%"+location.getText()+"%' ";
-      if (!date.getText().equals(""))      sql+=(!sql.equals("")?"AND ":"")+"DATE > '"+date.getText()+"' ";
+      if (!date.getText().equals(""))      sql+=(!sql.equals("")?"AND ":"")+"CREATED_ON > '"+date.getText()+"' ";
       if (!bedrooms.getText().equals(""))  sql+=(!sql.equals("")?"AND ":"")+"BEDROOMS LIKE '%"+bedrooms.getText()+"%' ";
       if (!type.getText().equals(""))      sql+=(!sql.equals("")?"AND ":"")+"TYPE LIKE '%"+type.getText()+"%' ";
       parent.setQuery(sql);

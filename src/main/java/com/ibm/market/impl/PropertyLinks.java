@@ -29,7 +29,8 @@ public class PropertyLinks implements Comparable, PropertySelection {
   String region = null;
   int cumulativePrice = 0;
   int averagePrice = 0;
-  int bargainValue = 0;
+  int percentProfit = 0;
+  int profit = 0;
   
   public PropertyLinks(String region)
   {
@@ -40,19 +41,21 @@ public class PropertyLinks implements Comparable, PropertySelection {
   public void addPropertyLink(PropertyDetails prop)
   {
     links.add(prop);
-    links.order(true);
+    links.order(false);
    
     // Calculate new figures
     cumulativePrice+=prop.getValue();
     averagePrice=cumulativePrice/links.getListSize();
-    bargainValue = averagePrice - ((PropertyDetails)links.getIndex().get(0)).getValue();
+    profit = (int) (averagePrice - ((PropertyDetails)links.getIndex().get(0)).getValue()) ;
+    percentProfit = (int) (100.0 * ((float) profit / (float) ((PropertyDetails)links.getIndex().get(0)).getValue()));
+    
   }
 
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   public String toString() {
-    return ((PropertyDetails)links.getIndex().get(0)).toString() +" - "+(int)((bargainValue/(float)(averagePrice - bargainValue))*100)+"% profit";
+    return ((PropertyDetails)links.getIndex().get(0)).toString() +" : "+percentProfit+"% profit";
   }
   
   /* (non-Javadoc)
@@ -66,8 +69,8 @@ public class PropertyLinks implements Comparable, PropertySelection {
     if (isHeadAvailable() && !((PropertyLinks)thatPropLinks).isHeadAvailable()) return AFTER;
     if (!isHeadAvailable() && ((PropertyLinks)thatPropLinks).isHeadAvailable()) return BEFORE;
 
-    if (bargainValue < ((PropertyLinks)thatPropLinks).getBargainValue()) return BEFORE;
-    if (bargainValue > ((PropertyLinks)thatPropLinks).getBargainValue()) return AFTER;
+    if (profit < ((PropertyLinks)thatPropLinks).getProfit()) return BEFORE;
+    if (profit > ((PropertyLinks)thatPropLinks).getProfit()) return AFTER;
     return EQUAL;
   }
 
@@ -78,8 +81,8 @@ public class PropertyLinks implements Comparable, PropertySelection {
   /**
    * @return
    */
-  public int getBargainValue() {
-    return bargainValue;
+  public int getProfit() {
+    return profit;
   }
 
   /* (non-Javadoc)

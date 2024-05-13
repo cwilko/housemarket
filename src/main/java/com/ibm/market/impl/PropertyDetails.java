@@ -162,13 +162,8 @@ public class PropertyDetails implements Comparable, PropertySelection
    */
   public void setPrice(String price)
   {
-    this.price = price;    
-    try {
-      priceValue = new Integer(price.replaceAll(",","")).intValue();
-    }
-    catch (NumberFormatException e) {
-      priceValue = Integer.MAX_VALUE;
-    }
+    this.price = price;  
+    priceValue = (int) new Float(price.replaceAll(",","")).floatValue();
   }
 
   /**
@@ -250,8 +245,8 @@ public class PropertyDetails implements Comparable, PropertySelection
     final int EQUAL = 0;
     final int AFTER = -1;
 
-    if (getValue() < ((PropertyDetails)thatProp).getValue()) return BEFORE;
-    if (getValue() > ((PropertyDetails)thatProp).getValue()) return AFTER;
+    if (getValue() > ((PropertyDetails)thatProp).getValue()) return BEFORE;
+    if (getValue() < ((PropertyDetails)thatProp).getValue()) return AFTER;
     return EQUAL;
   }
 
